@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
+import {ENV} from "./lib/env.js"
 
 import authRoutes from "./routes/auth.routes.js";
 import messageRoutes from "./routes/message.route.js";
@@ -11,7 +12,7 @@ dotenv.config();
 const app=express();
 const __dirname = path.resolve();
 
-const PORT = process.env.PORT || 3000;
+const PORT = ENV.PORT || 3000;
 
 app.use(express.json()); // req.body
 app.use("/api/auth", authRoutes);
