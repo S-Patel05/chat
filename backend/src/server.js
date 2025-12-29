@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -19,6 +20,7 @@ const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || ENV.PORT || 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 
 // API routes
 app.use("/api/auth", authRoutes);
