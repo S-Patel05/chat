@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ChatPage from "./pages/ChatPage";
-import LoginPage from "./pages/Loginpage";
+import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignupPage";
 import { useAuthStore } from "./store/useAuthStore";
 
