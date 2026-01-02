@@ -33,7 +33,7 @@ app.use("/api/messages", messageRoutes);
 // Serve frontend (ALWAYS — not only production)
 app.use(
   express.static(
-    path.join(__dirname, "../../frontend")
+    path.join(__dirname, "../../frontend/dist")
   )
 );
 
