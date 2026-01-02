@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import cors from "cors";
 
 import { ENV } from "./lib/env.js";
 import authRoutes from "./routes/auth.routes.js";
@@ -19,7 +20,10 @@ const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || ENV.PORT || 3000;
 
+app.use(cors({origin:ENV.CLIENT_URL, credentials:true}));
+
 app.use(express.json());
+
 app.use(cookieParser());
 
 // API routes
@@ -29,7 +33,7 @@ app.use("/api/messages", messageRoutes);
 // Serve frontend (ALWAYS — not only production)
 app.use(
   express.static(
-    path.join(__dirname, "../../frontend/dist")
+    path.join(__dirname, "../../frontend")
   )
 );
 
