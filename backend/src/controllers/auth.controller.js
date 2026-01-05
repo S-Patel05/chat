@@ -100,22 +100,40 @@ export const logout = (_, res) => {
   res.cookie("jwt", "", { maxAge: 0 });
   res.status(200).json({ message: "Logged out successfully" });
 };
+
 export const updateProfile = async (req, res) => {
   try {
     const { profilePic } = req.body;
-    if (!profilePic) return res.status(400).json({ message: "Profile pic is required" });
+    if (!profilePic) {
+      return res.status(400).json({ message: "Profile pic is required" });
+    }
 
     const userId = req.user._id;
 
-    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    // 1️⃣ Find user first
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { profilePic: uploadResponse.secure_url },
-      { new: true }
-    );
+    // 2️⃣ Delete old image from Cloudinary
+    if (user.profilePicId) {
+      await cloudinary.uploader.destroy(user.profilePicId);
+    }
 
-    res.status(200).json(updatedUser);
+    // 3️⃣ Upload new image
+    const uploadResponse = await cloudinary.uploader.upload(profilePic, {
+      folder: "profile",
+      quality: "auto",
+      fetch_format: "auto",
+    });
+
+    // 4️⃣ Update user
+    user.profilePic = uploadResponse.secure_url;
+    user.profilePicId = uploadResponse.public_id;
+    await user.save();
+
+    res.status(200).json(user);
   } catch (error) {
     console.log("Error in update profile:", error);
     res.status(500).json({ message: "Internal server error" });
