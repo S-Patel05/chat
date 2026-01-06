@@ -84,7 +84,7 @@ export const useChatStore = create((set, get) => ({
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   },
-/*
+
   subscribeToMessages: () => {
     const { selectedUser, isSoundEnabled } = get();
     if (!selectedUser) return;
@@ -110,5 +110,5 @@ export const useChatStore = create((set, get) => ({
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
     socket.off("newMessage");
-  },*/
+  },
 }));
