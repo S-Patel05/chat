@@ -9,10 +9,10 @@ import { ENV } from "./lib/env.js";
 import authRoutes from "./routes/auth.routes.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
+import { app, server } from "./lib/socket.js";
 
 dotenv.config();
 
-const app = express();
 
 // Fix __dirname correctly
 const __filename = fileURLToPath(import.meta.url);
@@ -45,7 +45,7 @@ app.get("*", (req, res) => {
   );
 });
 
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   console.log("Server running on port:", PORT);
   await connectDB();
 });
