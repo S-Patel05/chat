@@ -22,7 +22,9 @@ function SignUpPage() {
               <div className="w-full max-w-md">
                 {/* HEADING TEXT */}
                 <div className="text-center mb-8">
-                  <MessageCircleIcon className="w-12 h-12 mx-auto text-slate-400 mb-4" />
+                  <div className="size-20 bg-cyan-500/20 rounded-full flex items-center justify-center mb-4 mx-auto text-slate-400">
+                    <img src="/j().png" alt="" />
+                  </div>
                   <h2 className="text-2xl font-bold text-slate-200 mb-2">Create Account</h2>
                   <p className="text-slate-400">Sign up for a new account</p>
                 </div>
