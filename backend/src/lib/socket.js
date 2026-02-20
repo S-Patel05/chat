@@ -3,6 +3,7 @@ import http from "http";
 import express from "express";
 import { ENV } from "./env.js";
 import { socketAuthMiddleware } from "../middleware/socket.auth.middleware.js";
+import Message from "../models/Message.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -14,27 +15,53 @@ const io = new Server(server, {
   },
 });
 
-// apply authentication middleware to all socket connections
 io.use(socketAuthMiddleware);
 
-// we will use this function to check if the user is online or not
+// online users
+const userSocketMap = {}; // { userId: socketId }
+
 export function getReceiverSocketId(userId) {
   return userSocketMap[userId];
 }
 
-// this is for storig online users
-const userSocketMap = {}; // {userId:socketId}
-
 io.on("connection", (socket) => {
   console.log("A user connected", socket.user.fullName);
 
-  const userId = socket.userId;
+  const userId = socket.user._id.toString();
   userSocketMap[userId] = socket.id;
 
-  // io.emit() is used to send events to all connected clients
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-  // with socket.on we listen for events from clients
+  // ✅ READ RECEIPTS — MUST BE HERE
+  socket.on("markMessagesAsRead", async ({ senderId }) => {
+    try {
+      if (!senderId) return;
+
+      await Message.updateMany(
+        {
+          senderId,
+          receiverId: socket.user._id,
+          isRead: false,
+        },
+        {
+          $set: {
+            isRead: true,
+            readAt: new Date(),
+          },
+        }
+      );
+
+      const senderSocketId = userSocketMap[senderId];
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("messagesRead", {
+          readerId: socket.user._id,
+        });
+      }
+    } catch (error) {
+      console.error("Read receipt error:", error);
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("A user disconnected", socket.user.fullName);
     delete userSocketMap[userId];
