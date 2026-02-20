@@ -54,7 +54,7 @@ io.on("connection", (socket) => {
       const senderSocketId = userSocketMap[senderId];
       if (senderSocketId) {
         io.to(senderSocketId).emit("messagesRead", {
-          readerId: socket.user._id,
+          readerId: socket.user._id.toString(),
         });
       }
     } catch (error) {

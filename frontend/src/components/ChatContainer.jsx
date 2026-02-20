@@ -83,7 +83,7 @@ function ChatContainer() {
                       {isMine && (
                         <span
                           className={`ml-1 text-sm ${
-                            msg.isRead ? "text-blue-400" : "text-gray-300"
+                            msg.isRead ? "text-blue-900" : "text-gray-300"
                           }`}
                         >
                           {msg.isRead ? "✓✓" : "✓"}
